@@ -3,9 +3,6 @@
 import os
 import sys
 
-# Path to Qt plugins (update this path accordingly)
-qt_plugins_path = "/Users/samalexies/venv/lib/python3.13/site-packages/PyQt6/Qt6/plugins"
-
 # Project root (where main.py is located)
 project_root = os.path.abspath(".")
 
@@ -34,19 +31,17 @@ a = Analysis(
     ['main.py'],
     pathex=[project_root],
     binaries=[],
-    datas=added_files + [
-        # Include Qt platform plugins for macOS GUI support
-        (os.path.join(qt_plugins_path, 'platforms'), 'qt/plugins/platforms'),
-    ],
+    datas=added_files,
     hiddenimports=[
         'PyQt6',
+        'PyQt6.QtCore',
+        'PyQt6.QtGui',
+        'PyQt6.QtWidgets',
         'psycopg2',
         'json',
         'traceback',
-        'PyQt6.QtCore',
-        'PyQt6.QtGui',
-        'PyQt6.QtWidgets','pkgutil',          # Needed for PyQt6 UI loading
-        'xml.etree.ElementTree'
+        'pkgutil',
+        'xml.etree.ElementTree',
     ],
     hookspath=[],
     hooksconfig={},
@@ -68,9 +63,7 @@ exe = EXE(
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
-    console=False,  # Set to True for terminal output
-    disable_windowed_traceback=False,
-    argv_emulation=False,
+    console=False,
 )
 
 coll = COLLECT(
