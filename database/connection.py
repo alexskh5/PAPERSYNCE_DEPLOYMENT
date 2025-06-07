@@ -1,51 +1,112 @@
 # database/connection.py
 
-import psycopg2
+# database/connection.py
+
 import os
-import sys
 import json
+import sys
 import traceback
+import psycopg2
+from pathlib import Path
 
 class Database:
+    def __init__(self):
+        self.connection = None
+        self._config = None  # Cache for config after loading
+
+    def _load_config(self):
+        if self._config:
+            return self._config
+
+        # Try environment variables first
+        config = {
+            'dbname': os.getenv('DB_NAME'),
+            'user': os.getenv('DB_USER'),
+            'password': os.getenv('DB_PASSWORD'),
+            'host': os.getenv('DB_HOST'),
+            'port': os.getenv('DB_PORT', '5432')
+        }
+
+        if all(config.values()):
+            self._config = config
+            return config
+
+        # Try config.json in multiple locations
+        possible_paths = [
+            Path(getattr(sys, '_MEIPASS', '.')) / "database" / "config.json",
+            Path(__file__).parent / "config.json",
+            Path(sys.executable).parent / "database" / "config.json",
+            Path(sys.executable).parent / "config.json"
+        ]
+
+        for config_path in possible_paths:
+            try:
+                if config_path.exists():
+                    with open(config_path, 'r') as f:
+                        file_config = json.load(f)
+                    # Merge with env vars (env has higher priority)
+                    for key in ['dbname', 'user', 'password', 'host', 'port']:
+                        if os.getenv(f"DB_{key.upper()}"):
+                            file_config[key] = os.getenv(f"DB_{key.upper()}")
+                    self._config = file_config
+                    print(f"[DEBUG] Loaded config from {config_path}")
+                    return file_config
+            except Exception as e:
+                print(f"[WARNING] Could NOT load config from {config_path}: {e}")
+
+        # Fallback to default values (for dev only — not recommended for production)
+        fallback_config = {
+            'dbname': 'DB_PAPERSYNC',
+            'user': 'postgres',
+            'password': 'papersync2025',
+            'host': 'localhost',
+            'port': '5432'
+        }
+        print("[WARNING] Using fallback configuration. Consider using config.json or environment variables.")
+        self._config = fallback_config
+        return fallback_config
+
     def connect(self):
+        """Establish connection to PostgreSQL DB"""
+        if self.connection and not self.connection.closed:
+            return self.connection
+
+        config = self._load_config()
+
         try:
-            # Try multiple paths to find config.json
-            if getattr(sys, 'frozen', False):
-                # PyInstaller: _MEIPASS contains bundled files
-                base_path = sys._MEIPASS
-                config_path = os.path.join(base_path, "database", "config.json")
-                
-                if not os.path.exists(config_path):
-                    # Fallback: executable's parent directory
-                    base_path = os.path.dirname(sys.executable)
-                    config_path = os.path.join(base_path, "database", "config.json")
-
-            else:
-                # Dev mode: use relative path from this file
-                base_path = os.path.dirname(__file__)
-                config_path = os.path.join(base_path, "config.json")
-
-            print(f"[DEBUG] Looking for config at: {config_path}")
-            
-            if not os.path.exists(config_path):
-                raise FileNotFoundError(f"Config file NOT found at: {config_path}")
-
-            with open(config_path, "r") as f:
-                config = json.load(f)
-
-            print(f"[DEBUG] Loaded config: {config}")
-
             self.connection = psycopg2.connect(
-                dbname=config["dbname"],
-                user=config["user"],
-                password=config["password"],
-                host=config["host"],
-                port=config["port"]
+                dbname=config['dbname'],
+                user=config['user'],
+                password=config['password'],
+                host=config['host'],
+                port=config['port']
             )
-            print("[DEBUG] Connected to PostgreSQL database.")
+            print("[INFO] Successfully connected to PostgreSQL")
+            return self.connection
         except Exception as e:
-            print("[ERROR] Database connection failed:")
+            print("[ERROR] Failed to connect to PostgreSQL:")
             traceback.print_exc()
+            raise ConnectionError(f"Database connection failed: {e}")
+
+    def get_cursor(self):
+        if not self.connection or self.connection.closed:
+            self.connect()
+        return self.connection.cursor()
+
+    def close(self):
+        if self.connection and not self.connection.closed:
+            self.connection.close()
+            print("[INFO] Database connection closed")
+
+    def get_user_first_name(self, username):
+        try:
+            cursor = self.get_cursor()
+            cursor.execute("SELECT STAFF_FIRSTNAME FROM STAFF WHERE STAFF_USERNAME = %s", (username,))
+            result = cursor.fetchone()
+            return result[0] if result else None
+        except Exception as e:
+            print(f"[ERROR] Failed to fetch user name: {e}")
+            return None
             
     def get_cursor(self):
         if self.connection:
