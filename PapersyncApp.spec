@@ -45,7 +45,8 @@ a = Analysis(
         'traceback',
         'PyQt6.QtCore',
         'PyQt6.QtGui',
-        'PyQt6.QtWidgets',
+        'PyQt6.QtWidgets','pkgutil',          # Needed for PyQt6 UI loading
+        'xml.etree.ElementTree'
     ],
     hookspath=[],
     hooksconfig={},
