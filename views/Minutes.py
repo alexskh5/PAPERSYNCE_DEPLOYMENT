@@ -36,10 +36,10 @@ class MinutesApp:
         
         # self.app = QApplication(sys.argv)
         self.window = uic.loadUi(resource_path("ui/minutes.ui"))
-        if parent_geometry:
-            self.window.setGeometry(parent_geometry)
-        else:
-            self.window.setGeometry(300, 200, 1000, 500)
+        # if parent_geometry:
+        #    self.window.setGeometry(parent_geometry)
+        # else:
+        #    self.window.setGeometry(300, 200, 1000, 500)
         self.window.stackedWidget.setCurrentIndex(0)
         
         # Set today's date
