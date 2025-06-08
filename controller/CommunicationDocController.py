@@ -76,7 +76,7 @@ class CommunicationDocController:
         edit_btn = QPushButton()
         delete_btn = QPushButton()
         edit_btn.setIcon(QIcon(resource_path("asset/icons/edit-2(blue).svg")))
-        delete_btn.setIcon(QIcon(resource_path("asset/icons/rash-2(blue).svg")))
+        delete_btn.setIcon(QIcon(resource_path("asset/icons/trash-2(blue).svg")))
         for btn in (edit_btn, delete_btn):
             btn.setIconSize(QSize(24, 24))
             btn.setFixedSize(32, 32)
