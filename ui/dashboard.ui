@@ -1324,8 +1324,8 @@ color: white;</string>
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>100</width>
-                   <height>30</height>
+                   <width>346</width>
+                   <height>516</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1913,7 +1913,7 @@ QTableWidget::item {
                      <widget class="QPushButton" name="editProfileBtn">
                       <property name="font">
                        <font>
-                        <pointsize>11</pointsize>
+                        <pointsize>10</pointsize>
                        </font>
                       </property>
                       <property name="styleSheet">
@@ -2245,8 +2245,8 @@ color: #1b3652;</string>
                                   <rect>
                                    <x>0</x>
                                    <y>0</y>
-                                   <width>504</width>
-                                   <height>200</height>
+                                   <width>100</width>
+                                   <height>30</height>
                                   </rect>
                                  </property>
                                  <property name="styleSheet">
@@ -3200,17 +3200,18 @@ border-bottom: 1px solid white;</string>
                           <property name="minimumSize">
                            <size>
                             <width>100</width>
-                            <height>0</height>
+                            <height>5</height>
                            </size>
                           </property>
                           <property name="maximumSize">
                            <size>
                             <width>100</width>
-                            <height>16777215</height>
+                            <height>30</height>
                            </size>
                           </property>
                           <property name="font">
                            <font>
+                            <pointsize>11</pointsize>
                             <bold>true</bold>
                            </font>
                           </property>
@@ -3237,11 +3238,12 @@ text-align: center;
                           <property name="maximumSize">
                            <size>
                             <width>100</width>
-                            <height>16777215</height>
+                            <height>30</height>
                            </size>
                           </property>
                           <property name="font">
                            <font>
+                            <pointsize>11</pointsize>
                             <bold>true</bold>
                            </font>
                           </property>

@@ -340,7 +340,7 @@ border-radius: 10px;</string>
           <item>
            <widget class="QStackedWidget" name="stackedWidget">
             <property name="currentIndex">
-             <number>1</number>
+             <number>2</number>
             </property>
             <widget class="QWidget" name="minutesTable">
              <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -500,7 +500,7 @@ color: black;</string>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_5">
                     <property name="spacing">
-                     <number>40</number>
+                     <number>30</number>
                     </property>
                     <property name="leftMargin">
                      <number>50</number>
@@ -560,7 +560,7 @@ color: black;</string>
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>16</pointsize>
+                           <pointsize>14</pointsize>
                            <fontweight>DemiBold</fontweight>
                           </font>
                          </property>
@@ -590,7 +590,7 @@ color: black;</string>
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>14</pointsize>
+                           <pointsize>12</pointsize>
                            <underline>false</underline>
                            <strikeout>false</strikeout>
                           </font>
@@ -667,7 +667,7 @@ border-bottom: 1px solid gray;</string>
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>16</pointsize>
+                           <pointsize>14</pointsize>
                            <fontweight>DemiBold</fontweight>
                           </font>
                          </property>
@@ -703,7 +703,7 @@ border-bottom: 1px solid gray;</string>
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>14</pointsize>
+                           <pointsize>12</pointsize>
                            <underline>false</underline>
                            <strikeout>false</strikeout>
                           </font>
@@ -793,7 +793,7 @@ border-bottom: 1px solid gray;</string>
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>16</pointsize>
+                           <pointsize>14</pointsize>
                            <fontweight>DemiBold</fontweight>
                           </font>
                          </property>
@@ -829,7 +829,7 @@ border-bottom: 1px solid gray;</string>
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>14</pointsize>
+                           <pointsize>12</pointsize>
                            <underline>false</underline>
                            <strikeout>false</strikeout>
                           </font>
@@ -912,7 +912,7 @@ border-bottom: 1px solid gray;</string>
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>16</pointsize>
+                           <pointsize>14</pointsize>
                            <fontweight>DemiBold</fontweight>
                           </font>
                          </property>
@@ -942,7 +942,7 @@ border-bottom: 1px solid gray;</string>
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>14</pointsize>
+                           <pointsize>12</pointsize>
                            <underline>false</underline>
                            <strikeout>false</strikeout>
                           </font>
@@ -1045,7 +1045,7 @@ QComboBox QAbstractItemView {
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>16</pointsize>
+                           <pointsize>14</pointsize>
                            <fontweight>DemiBold</fontweight>
                           </font>
                          </property>
@@ -1075,7 +1075,7 @@ QComboBox QAbstractItemView {
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>14</pointsize>
+                           <pointsize>12</pointsize>
                            <underline>false</underline>
                            <strikeout>false</strikeout>
                           </font>
@@ -1160,7 +1160,7 @@ QComboBox QAbstractItemView {
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>16</pointsize>
+                           <pointsize>14</pointsize>
                            <fontweight>DemiBold</fontweight>
                           </font>
                          </property>
@@ -1185,12 +1185,12 @@ QComboBox QAbstractItemView {
                          <property name="maximumSize">
                           <size>
                            <width>16777215</width>
-                           <height>40</height>
+                           <height>60</height>
                           </size>
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>14</pointsize>
+                           <pointsize>12</pointsize>
                            <underline>false</underline>
                            <strikeout>false</strikeout>
                           </font>
@@ -1381,7 +1381,7 @@ color: black;</string>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_6">
                     <property name="spacing">
-                     <number>40</number>
+                     <number>30</number>
                     </property>
                     <property name="leftMargin">
                      <number>50</number>
@@ -1441,7 +1441,7 @@ color: black;</string>
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>16</pointsize>
+                           <pointsize>14</pointsize>
                            <fontweight>DemiBold</fontweight>
                           </font>
                          </property>
@@ -1471,7 +1471,7 @@ color: black;</string>
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>14</pointsize>
+                           <pointsize>12</pointsize>
                            <underline>false</underline>
                            <strikeout>false</strikeout>
                           </font>
@@ -1548,7 +1548,7 @@ border-bottom: 1px solid gray;</string>
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>16</pointsize>
+                           <pointsize>14</pointsize>
                            <fontweight>DemiBold</fontweight>
                           </font>
                          </property>
@@ -1584,7 +1584,7 @@ border-bottom: 1px solid gray;</string>
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>14</pointsize>
+                           <pointsize>12</pointsize>
                            <underline>false</underline>
                            <strikeout>false</strikeout>
                           </font>
@@ -1674,7 +1674,7 @@ border-bottom: 1px solid gray;</string>
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>16</pointsize>
+                           <pointsize>14</pointsize>
                            <fontweight>DemiBold</fontweight>
                           </font>
                          </property>
@@ -1710,7 +1710,7 @@ border-bottom: 1px solid gray;</string>
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>14</pointsize>
+                           <pointsize>12</pointsize>
                            <underline>false</underline>
                            <strikeout>false</strikeout>
                           </font>
@@ -1727,7 +1727,7 @@ border-bottom: 1px solid gray;</string>
                            <second>0</second>
                            <year>1999</year>
                            <month>12</month>
-                           <day>27</day>
+                           <day>26</day>
                           </datetime>
                          </property>
                          <property name="displayFormat">
@@ -1803,7 +1803,7 @@ border-bottom: 1px solid gray;</string>
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>16</pointsize>
+                           <pointsize>14</pointsize>
                            <fontweight>DemiBold</fontweight>
                           </font>
                          </property>
@@ -1833,7 +1833,7 @@ border-bottom: 1px solid gray;</string>
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>14</pointsize>
+                           <pointsize>12</pointsize>
                            <underline>false</underline>
                            <strikeout>false</strikeout>
                           </font>
@@ -1930,7 +1930,7 @@ QComboBox QAbstractItemView {
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>16</pointsize>
+                           <pointsize>14</pointsize>
                            <fontweight>DemiBold</fontweight>
                           </font>
                          </property>
@@ -1960,7 +1960,7 @@ QComboBox QAbstractItemView {
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>14</pointsize>
+                           <pointsize>12</pointsize>
                            <underline>false</underline>
                            <strikeout>false</strikeout>
                           </font>
@@ -2070,12 +2070,12 @@ QComboBox QAbstractItemView {
                          <property name="maximumSize">
                           <size>
                            <width>16777215</width>
-                           <height>40</height>
+                           <height>60</height>
                           </size>
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>14</pointsize>
+                           <pointsize>12</pointsize>
                            <underline>false</underline>
                            <strikeout>false</strikeout>
                           </font>

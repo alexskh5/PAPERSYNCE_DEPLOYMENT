@@ -340,7 +340,7 @@ border-radius: 10px;</string>
           <item>
            <widget class="QStackedWidget" name="stackedWidget">
             <property name="currentIndex">
-             <number>1</number>
+             <number>2</number>
             </property>
             <widget class="QWidget" name="otherTable">
              <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -500,7 +500,7 @@ color: black;</string>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_5">
                     <property name="spacing">
-                     <number>40</number>
+                     <number>30</number>
                     </property>
                     <property name="leftMargin">
                      <number>50</number>
@@ -560,7 +560,7 @@ color: black;</string>
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>16</pointsize>
+                           <pointsize>14</pointsize>
                            <fontweight>DemiBold</fontweight>
                           </font>
                          </property>
@@ -596,7 +596,7 @@ color: black;</string>
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>14</pointsize>
+                           <pointsize>12</pointsize>
                            <underline>false</underline>
                            <strikeout>false</strikeout>
                           </font>
@@ -667,7 +667,7 @@ border-bottom: 1px solid gray;</string>
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>16</pointsize>
+                           <pointsize>14</pointsize>
                            <fontweight>DemiBold</fontweight>
                           </font>
                          </property>
@@ -685,7 +685,7 @@ border-bottom: 1px solid gray;</string>
                         <widget class="QLineEdit" name="titleInput">
                          <property name="font">
                           <font>
-                           <pointsize>14</pointsize>
+                           <pointsize>12</pointsize>
                            <underline>false</underline>
                            <strikeout>false</strikeout>
                           </font>
@@ -734,7 +734,7 @@ border-bottom: 1px solid gray;</string>
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>16</pointsize>
+                           <pointsize>14</pointsize>
                            <fontweight>DemiBold</fontweight>
                           </font>
                          </property>
@@ -752,7 +752,7 @@ border-bottom: 1px solid gray;</string>
                         <widget class="QLineEdit" name="fromInput">
                          <property name="font">
                           <font>
-                           <pointsize>14</pointsize>
+                           <pointsize>12</pointsize>
                            <underline>false</underline>
                            <strikeout>false</strikeout>
                           </font>
@@ -801,7 +801,7 @@ border-bottom: 1px solid gray;</string>
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>16</pointsize>
+                           <pointsize>14</pointsize>
                            <fontweight>DemiBold</fontweight>
                           </font>
                          </property>
@@ -826,12 +826,12 @@ border-bottom: 1px solid gray;</string>
                          <property name="maximumSize">
                           <size>
                            <width>16777215</width>
-                           <height>50</height>
+                           <height>60</height>
                           </size>
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>14</pointsize>
+                           <pointsize>12</pointsize>
                            <underline>false</underline>
                            <strikeout>false</strikeout>
                           </font>
@@ -892,7 +892,7 @@ border-bottom: 1px solid gray;</string>
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>16</pointsize>
+                           <pointsize>14</pointsize>
                            <fontweight>DemiBold</fontweight>
                           </font>
                          </property>
@@ -1157,7 +1157,7 @@ color: black;</string>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_6">
                     <property name="spacing">
-                     <number>40</number>
+                     <number>30</number>
                     </property>
                     <property name="leftMargin">
                      <number>50</number>
@@ -1217,7 +1217,7 @@ color: black;</string>
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>16</pointsize>
+                           <pointsize>14</pointsize>
                            <fontweight>DemiBold</fontweight>
                           </font>
                          </property>
@@ -1253,7 +1253,7 @@ color: black;</string>
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>14</pointsize>
+                           <pointsize>12</pointsize>
                            <underline>false</underline>
                            <strikeout>false</strikeout>
                           </font>
@@ -1324,7 +1324,7 @@ border-bottom: 1px solid gray;</string>
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>16</pointsize>
+                           <pointsize>14</pointsize>
                            <fontweight>DemiBold</fontweight>
                           </font>
                          </property>
@@ -1342,7 +1342,7 @@ border-bottom: 1px solid gray;</string>
                         <widget class="QLineEdit" name="editTitleInput">
                          <property name="font">
                           <font>
-                           <pointsize>14</pointsize>
+                           <pointsize>12</pointsize>
                            <underline>false</underline>
                            <strikeout>false</strikeout>
                           </font>
@@ -1391,7 +1391,7 @@ border-bottom: 1px solid gray;</string>
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>16</pointsize>
+                           <pointsize>14</pointsize>
                            <fontweight>DemiBold</fontweight>
                           </font>
                          </property>
@@ -1409,7 +1409,7 @@ border-bottom: 1px solid gray;</string>
                         <widget class="QLineEdit" name="editFromInput">
                          <property name="font">
                           <font>
-                           <pointsize>14</pointsize>
+                           <pointsize>12</pointsize>
                            <underline>false</underline>
                            <strikeout>false</strikeout>
                           </font>
@@ -1458,7 +1458,7 @@ border-bottom: 1px solid gray;</string>
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>16</pointsize>
+                           <pointsize>14</pointsize>
                            <fontweight>DemiBold</fontweight>
                           </font>
                          </property>
@@ -1483,12 +1483,12 @@ border-bottom: 1px solid gray;</string>
                          <property name="maximumSize">
                           <size>
                            <width>16777215</width>
-                           <height>50</height>
+                           <height>60</height>
                           </size>
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>14</pointsize>
+                           <pointsize>12</pointsize>
                            <underline>false</underline>
                            <strikeout>false</strikeout>
                           </font>
@@ -1549,7 +1549,7 @@ border-bottom: 1px solid gray;</string>
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>16</pointsize>
+                           <pointsize>14</pointsize>
                            <fontweight>DemiBold</fontweight>
                           </font>
                          </property>
