@@ -62,10 +62,10 @@ class ProposeMeasureApp:
         # self.window = uic.loadUi(os.path.join(BASE_DIR, "..", "ui", "proposeMeasuredups.ui"))
         self.window = uic.loadUi(resource_path("ui/ProposeMeasure.ui"), QMainWindow())
         # self.window.showFullScreen() 
-        if parent_geometry:
-            self.window.setGeometry(parent_geometry)
-        else:
-            self.window.setGeometry(300, 200, 1000, 500)
+        # if parent_geometry:
+        #    self.window.setGeometry(parent_geometry)
+        # else:
+        #    self.window.setGeometry(300, 200, 1000, 500)
         print(f"Window size: {self.window.size()}")
         print(f"Frame size: {self.window.frameSize()}")
 
