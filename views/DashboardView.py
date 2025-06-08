@@ -536,7 +536,7 @@ class Dashboard(QMainWindow):
         if self.sidebar_expanded:
             anim.setStartValue(self.EXPANDED)
             anim.setEndValue(self.COLLAPSED)
-            self.menuBtn.setIcon(QIcon(os.path.join("asset/icons/menu.svg")))
+            self.menuBtn.setIcon(QIcon(resource_path("asset/icons/menu.svg")))
         else:
             anim.setStartValue(self.COLLAPSED)
             anim.setEndValue(self.EXPANDED)
