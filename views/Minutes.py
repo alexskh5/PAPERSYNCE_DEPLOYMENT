@@ -37,9 +37,19 @@ class MinutesApp:
         # self.app = QApplication(sys.argv)
         self.window = uic.loadUi(resource_path("ui/minutes.ui"))
         # if parent_geometry:
-        #    self.window.setGeometry(parent_geometry)
+        #     self.window.setGeometry(parent_geometry)
         # else:
-        #    self.window.setGeometry(300, 200, 1000, 500)
+        #     self.window.setGeometry(300, 200, 1000, 500)
+        
+        self.window.setWindowFlags(Qt.WindowType.Window)  # enable minimize/maximize/close
+        self.window.resize(1200, 800)  # initial window size
+        self.window.setMinimumSize(800, 600)  # optional limit
+        self.window.show() 
+        
+        self.window.setWindowIcon(QIcon(resource_path("asset/icons/app_logo.svg")))
+
+        
+        
         self.window.stackedWidget.setCurrentIndex(0)
         
         # Set today's date

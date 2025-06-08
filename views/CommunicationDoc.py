@@ -62,12 +62,12 @@ class CommunicationDocApp:
         # self.app = QApplication(sys.argv)
         self.window = uic.loadUi(resource_path("ui/commDocu.ui"))
         # if parent_geometry:
-        #    self.window.setGeometry(parent_geometry)
+        #     self.window.setGeometry(parent_geometry)
         # else:
-        #    self.window.setGeometry(300, 200, 1000, 500)
-        self.window.stackedWidget.setCurrentIndex(0)
-        print(f"Window size: {self.window.size()}")
-        print(f"Frame size: {self.window.frameSize()}")
+        #     self.window.setGeometry(300, 200, 1000, 500)
+        # self.window.stackedWidget.setCurrentIndex(0)
+        # print(f"Window size: {self.window.size()}")
+        # print(f"Frame size: {self.window.frameSize()}")
         # --- to get today's date ---
         self.window.dateReceivedInput.setDate(QDate.currentDate())
         self.window.editDateReceivedInput.setDate(QDate.currentDate())

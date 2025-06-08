@@ -61,13 +61,20 @@ class ProposeMeasureApp:
         # self.app = QApplication(sys.argv)
         # self.window = uic.loadUi(os.path.join(BASE_DIR, "..", "ui", "proposeMeasuredups.ui"))
         self.window = uic.loadUi(resource_path("ui/ProposeMeasure.ui"), QMainWindow())
+        
+        self.window.setWindowFlags(Qt.WindowType.Window)  # enable minimize/maximize/close
+        self.window.resize(1200, 800)  # initial window size
+        self.window.setMinimumSize(800, 600)  # optional limit
+        self.window.show() 
+        
+        self.window.setWindowIcon(QIcon(resource_path("asset/icons/app_logo.svg")))
         # self.window.showFullScreen() 
         # if parent_geometry:
-        #    self.window.setGeometry(parent_geometry)
+        #     self.window.setGeometry(parent_geometry)
         # else:
-        #    self.window.setGeometry(300, 200, 1000, 500)
-        print(f"Window size: {self.window.size()}")
-        print(f"Frame size: {self.window.frameSize()}")
+        #     self.window.setGeometry(300, 200, 1000, 500)
+        # print(f"Window size: {self.window.size()}")
+        # print(f"Frame size: {self.window.frameSize()}")
 
         self.window.stackedWidget.setCurrentIndex(0)
 

@@ -440,9 +440,15 @@ class Dashboard(QMainWindow):
         
         # Set title, icon, etc...,
         self.setWindowTitle("paperSync")
+        
+        self.setWindowFlags(Qt.WindowType.Window)  # enable minimize/maximize/close
+        self.resize(1200, 800)  # initial window size
+        self.setMinimumSize(800, 600)  # optional limit
+        self.show() 
+        
         # self.showFullScreen() 
         # self.setGeometry(300, 200, 1000, 500)
-        self.setWindowIcon(QIcon(resource_path("asset/images/madridejosLogo.png")))
+        self.setWindowIcon(QIcon(resource_path("asset/icons/app_logo.svg")))
 
         # Set images
         self.logoLabel.setPixmap(QPixmap(resource_path("asset/images/madridejosLogo.png")))

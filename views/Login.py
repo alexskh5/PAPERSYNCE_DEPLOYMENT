@@ -1,5 +1,5 @@
 from PyQt6 import QtWidgets, uic
-from PyQt6.QtGui import QPixmap
+from PyQt6.QtGui import QIcon, QPixmap
 from PyQt6.QtWidgets import QMessageBox
 import sys, os, json
 
@@ -54,6 +54,8 @@ class LoginWindow(QtWidgets.QMainWindow):
         central_widget.cebuLogo.setPixmap(QPixmap(resource_path("asset/images/provinceCebuLogo.png")))
         central_widget.cebuLogo.setScaledContents(True)
 
+        self.setWindowIcon(QIcon(resource_path("asset/icons/app_logo.svg")))
+        
         # Store references to widgets for easier access
         self.userInput = central_widget.userInput
         self.passInput = central_widget.passInput
