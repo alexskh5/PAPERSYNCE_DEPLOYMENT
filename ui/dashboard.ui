@@ -1324,8 +1324,8 @@ color: white;</string>
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>346</width>
-                   <height>516</height>
+                   <width>100</width>
+                   <height>30</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1911,6 +1911,18 @@ QTableWidget::item {
                     </property>
                     <item>
                      <widget class="QPushButton" name="editProfileBtn">
+                      <property name="minimumSize">
+                       <size>
+                        <width>80</width>
+                        <height>0</height>
+                       </size>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>200</width>
+                        <height>16777215</height>
+                       </size>
+                      </property>
                       <property name="font">
                        <font>
                         <pointsize>10</pointsize>
@@ -3200,13 +3212,13 @@ border-bottom: 1px solid white;</string>
                           <property name="minimumSize">
                            <size>
                             <width>100</width>
-                            <height>5</height>
+                            <height>50</height>
                            </size>
                           </property>
                           <property name="maximumSize">
                            <size>
                             <width>100</width>
-                            <height>30</height>
+                            <height>100</height>
                            </size>
                           </property>
                           <property name="font">
@@ -3232,13 +3244,13 @@ text-align: center;
                           <property name="minimumSize">
                            <size>
                             <width>100</width>
-                            <height>0</height>
+                            <height>50</height>
                            </size>
                           </property>
                           <property name="maximumSize">
                            <size>
                             <width>100</width>
-                            <height>30</height>
+                            <height>100</height>
                            </size>
                           </property>
                           <property name="font">
