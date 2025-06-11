@@ -248,22 +248,24 @@ DECLARE
 BEGIN
     IF TG_OP = 'INSERT' THEN
         action_type := 'Created';
-        row_title := NEW.min_link;
+        row_title := NEW.min_num;
     ELSIF TG_OP = 'UPDATE' THEN
         action_type := 'Updated';
-        row_title := NEW.min_link;
+        row_title := NEW.min_num;
     ELSIF TG_OP = 'DELETE' THEN
         action_type := 'Deleted';
-        row_title := OLD.min_link;
+        row_title := OLD.min_num;
     END IF;
+
     INSERT INTO history(table_name, row_title, staff_id, action_detail, action_date)
     VALUES (
         'MINUTES',
         row_title,
-        COALESCE(NEW.created_by, OLD.created_by),
+        COALESCE(NEW.updated_by, OLD.updated_by, NEW.created_by),  -- ✅ Updated here
         action_type || ' minutes record: ' || COALESCE(row_title, 'No Title'),
         CURRENT_TIMESTAMP
     );
+
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
@@ -290,14 +292,16 @@ BEGIN
         action_type := 'Deleted';
         row_title := OLD.other_title;
     END IF;
+
     INSERT INTO history(table_name, row_title, staff_id, action_detail, action_date)
     VALUES (
         'OTHER_DOC',
         row_title,
-        COALESCE(NEW.created_by, OLD.created_by),
+        COALESCE(NEW.updated_by, OLD.updated_by, NEW.created_by),  -- ✅ Updated here
         action_type || ' other document: ' || COALESCE(row_title, 'No Title'),
         CURRENT_TIMESTAMP
     );
+
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
@@ -324,18 +328,16 @@ BEGIN
         action_type := 'Deleted';
         row_title := OLD.comm_title;
     END IF;
+
     INSERT INTO history(table_name, row_title, staff_id, action_detail, action_date)
     VALUES (
         'COMMUNICATION_DOC',
         row_title,
-        COALESCE(NEW.created_by, OLD.created_by),
+        COALESCE(NEW.updated_by, OLD.updated_by, NEW.created_by),  -- ✅ Changed here
         action_type || ' communication document: ' || COALESCE(row_title, 'No Title'),
         CURRENT_TIMESTAMP
     );
+
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
-
-CREATE TRIGGER trg_communication_doc_history
-AFTER INSERT OR UPDATE OR DELETE ON COMMUNICATION_DOC
-FOR EACH ROW EXECUTE FUNCTION communication_doc_history();
