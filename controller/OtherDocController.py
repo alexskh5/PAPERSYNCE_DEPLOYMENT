@@ -362,7 +362,7 @@ class OtherDocController:
                     'other_from': form_data.get('other_from'),
                     'other_status': form_data.get('other_status'),
                     'other_attachfile': attach_file,
-                    'updated_by': form_data.get('updated_by', 1),
+                    'updated_by': form_data.get('updated_by'),
                     'other_id': other_id
                 })
                 self.db.commit()

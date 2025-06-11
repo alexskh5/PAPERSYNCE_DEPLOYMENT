@@ -315,6 +315,7 @@ class CommunicationDocController:
     def save_to_database(self, form_data, communication_id=None):
         try:
             cursor = self.db.get_cursor()
+            print("[DEBUG] Saving with updated_by:", form_data.get('updated_by'))
 
             # --- Set the attachfile path ---
             if communication_id is None:
