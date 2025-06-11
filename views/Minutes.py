@@ -41,10 +41,10 @@ class MinutesApp:
         # else:
         #     self.window.setGeometry(300, 200, 1000, 500)
         
-        self.window.setWindowFlags(Qt.WindowType.Window)  # enable minimize/maximize/close
-        self.window.resize(1200, 800)  # initial window size
-        self.window.setMinimumSize(800, 600)  # optional limit
-        self.window.show() 
+        # self.window.setWindowFlags(Qt.WindowType.Window)  # enable minimize/maximize/close
+        # self.window.resize(1200, 800)  # initial window size
+        # self.window.setMinimumSize(800, 600)  # optional limit
+        # self.window.show() 
         
         self.window.setWindowIcon(QIcon(resource_path("asset/icons/app_logo.svg")))
 
@@ -154,8 +154,8 @@ class MinutesApp:
             "min_link": form_data.get("link"),
             "type_id": form_data.get("type"),
             "sub_id": form_data.get("subtype"),
-            "created_by": form_data.get("created_by", 1),
-            "updated_by": form_data.get("updated_by", 1),
+            "created_by": form_data.get("created_by"),
+            "updated_by": form_data.get("updated_by"),
         }
         
     def validate_input_numbers(self, minutes_num):
@@ -185,8 +185,8 @@ class MinutesApp:
             "type": int(type_data) if type_data is not None else None,
             "subtype": int(sub_type) if sub_type is not None else None,
             "link": self.window.linkInput.toPlainText(),
-            "created_by": 1,
-            "updated_by": 1
+            "created_by": self.staff_id,
+            "updated_by": self.staff_id,
         }
         
         
@@ -245,8 +245,7 @@ class MinutesApp:
             "type": int(type_data) if type_data is not None else None,
             "subtype": int(sub_type) if sub_type is not None else None,
             "link": self.window.editLinkInput.toPlainText(),
-            "created_by": 1,
-            "updated_by": 1
+            "updated_by": self.staff_id,
         }
         
         minutes_num = form_data["minutes_num"]

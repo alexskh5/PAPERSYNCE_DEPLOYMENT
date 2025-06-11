@@ -31,7 +31,7 @@ def resource_path(*relative_paths):
 
 
 class OtherDocumentApp:
-    def __init__(self, username, parent_geometry=None):
+    def __init__(self, username):
         self.username = username
         
         self.db = Database()
@@ -66,10 +66,10 @@ class OtherDocumentApp:
         # else:
         #     self.window.setGeometry(300, 200, 1000, 500)
         
-        self.window.setWindowFlags(Qt.WindowType.Window)  # enable minimize/maximize/close
-        self.window.resize(1200, 800)  # initial window size
-        self.window.setMinimumSize(800, 600)  # optional limit
-        self.window.show() 
+        # self.window.setWindowFlags(Qt.WindowType.Window)  # enable minimize/maximize/close
+        # self.window.resize(1200, 800)  # initial window size
+        # self.window.setMinimumSize(800, 600)  # optional limit
+        # self.window.show() 
         
         self.window.setWindowIcon(QIcon(resource_path("asset/icons/app_logo.svg")))
           
@@ -147,8 +147,8 @@ class OtherDocumentApp:
             "other_from": form_data.get("from"),
             "other_status": form_data.get("status"),
             "other_attachfile": form_data.get("attachFile"),
-            "created_by": form_data.get("created_by", 1),
-            "updated_by": form_data.get("updated_by", 1),
+            "created_by": form_data.get("created_by"),
+            "updated_by": form_data.get("updated_by"),
         }
     
     def handle_submit(self):
@@ -164,7 +164,8 @@ class OtherDocumentApp:
             "from": self.window.fromInput.text().strip(),
             "status": self.window.statusInput.toPlainText(),
             "attachFile": self.window.attachFileInput.toolTip(),
-            "created_by": 1,
+            "created_by": self.staff_id,
+            "updated_by": self.staff_id,
         }
 
         mapped_data = self.map_form_data_to_db_keys(form_data)
@@ -216,7 +217,7 @@ class OtherDocumentApp:
             "from": self.window.editFromInput.text().strip(),
             "status": self.window.editStatusInput.toPlainText(),
             "attachFile": attachfile_tooltip,
-            "updated_by": 1,  # Added updated_by field
+            "updated_by": self.staff_id,  # Added updated_by field
             }
         
         mapped_data = self.map_form_data_to_db_keys(form_data)

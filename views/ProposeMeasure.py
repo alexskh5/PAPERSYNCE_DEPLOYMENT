@@ -31,7 +31,7 @@ def resource_path(*relative_paths):
 
 
 class ProposeMeasureApp:
-    def __init__(self, username, parent_geometry=None):
+    def __init__(self, username):
         self.username = username
         
         self.db = Database()
@@ -62,10 +62,10 @@ class ProposeMeasureApp:
         # self.window = uic.loadUi(os.path.join(BASE_DIR, "..", "ui", "proposeMeasuredups.ui"))
         self.window = uic.loadUi(resource_path("ui/ProposeMeasure.ui"), QMainWindow())
         
-        self.window.setWindowFlags(Qt.WindowType.Window)  # enable minimize/maximize/close
-        self.window.resize(1200, 800)  # initial window size
-        self.window.setMinimumSize(800, 600)  # optional limit
-        self.window.show() 
+        # self.window.setWindowFlags(Qt.WindowType.Window)  # enable minimize/maximize/close
+        # self.window.resize(1200, 800)  # initial window size
+        # self.window.setMinimumSize(800, 600)  # optional limit
+        # self.window.show() 
         
         self.window.setWindowIcon(QIcon(resource_path("asset/icons/app_logo.svg")))
         # self.window.showFullScreen() 
@@ -197,8 +197,8 @@ class ProposeMeasureApp:
             "propose_is_publication": form_data.get("is_publication"),
             "propose_is_posting": form_data.get("is_posting"),
             "cond_id": form_data.get("cond_id"),
-            "created_by": form_data.get("created_by", 1),
-            "updated_by": form_data.get("updated_by", 1),
+            "created_by": form_data.get("created_by"),
+            "updated_by": form_data.get("updated_by"),
         }
 
     def validate_input_numbers(self, reso_number, ordi_number):

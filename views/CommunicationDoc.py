@@ -58,6 +58,9 @@ class CommunicationDocApp:
 
         self.db = Database()
         self.db.connect()
+        self.staff_id = self.db.get_staff_id(username)
+        
+        print(f"[DEBUG] Staff ID for {username}: {self.staff_id}")
 
         # self.app = QApplication(sys.argv)
         self.window = uic.loadUi(resource_path("ui/commDocu.ui"))
@@ -68,6 +71,14 @@ class CommunicationDocApp:
         # self.window.stackedWidget.setCurrentIndex(0)
         # print(f"Window size: {self.window.size()}")
         # print(f"Frame size: {self.window.frameSize()}")
+        
+        # self.window.setWindowFlags(Qt.WindowType.Window)  # enable minimize/maximize/close
+        # self.window.resize(1200, 800)  # initial window size
+        # self.window.setMinimumSize(800, 600)  # optional limit
+        # self.window.show() 
+        
+        self.window.setWindowIcon(QIcon(resource_path("asset/icons/app_logo.svg")))
+
         # --- to get today's date ---
         self.window.dateReceivedInput.setDate(QDate.currentDate())
         self.window.editDateReceivedInput.setDate(QDate.currentDate())
@@ -143,8 +154,8 @@ class CommunicationDocApp:
                 "comm_remarks": form_data.get("remarks"),
                 "comm_attachfile": form_data.get("attachFile"),
                 "comm_is_liquidate": form_data.get("liquidate"),
-                "created_by": form_data.get("created_by", 1),
-                "updated_by": form_data.get("updated_by", 1),
+                "created_by": form_data.get("created_by"),
+                "updated_by": form_data.get("updated_by"),
             }
 
     def handle_submit(self):
@@ -164,8 +175,8 @@ class CommunicationDocApp:
             "remarks": self.window.remarksInput.toPlainText(),
             "attachFile": self.window.attachFileInput.toolTip(),
             "liquidate": self.window.liquidateInput.currentText().strip().lower() == "yes",
-            "created_by": 1,
-            # "updated_by": 1, 
+            "created_by": self.staff_id,
+            "updated_by": self.staff_id, 
         }
 
         mapped_data = self.map_form_data_to_db_keys(form_data)
@@ -213,7 +224,8 @@ class CommunicationDocApp:
             "venue": self.window.editVenueInput.text().strip(),
             "remarks": self.window.editRemarksInput.toPlainText(),
             "attachFile": attachfile_tooltip,
-            "liquidate": self.window.editLiquidateInput.currentText().strip().lower() == "yes",        "updated_by": 1, 
+            "liquidate": self.window.editLiquidateInput.currentText().strip().lower() == "yes",        
+            "updated_by": self.staff_id, 
         }
         
         mapped_data = self.map_form_data_to_db_keys(form_data)
