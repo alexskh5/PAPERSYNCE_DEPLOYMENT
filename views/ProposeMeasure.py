@@ -39,8 +39,8 @@ class ProposeMeasureApp:
         self.staff_id = self.db.get_staff_id(username)
         
         # Local development path (default)
-        self.UPLOADS_DIR = os.path.join(PROJECT_ROOT, "uploads")
-
+        #self.UPLOADS_DIR = os.path.join(PROJECT_ROOT, "uploads")
+        self.UPLOADS_DIR = r"C:\paperSync\uploads
         # Uncomment this when deploying to client and NAS is mounted
         # self.UPLOADS_DIR = "/mnt/nas/uploads"  # For Linux
         # self.UPLOADS_DIR = "/Volumes/NASShare/uploads"  # For macOS
