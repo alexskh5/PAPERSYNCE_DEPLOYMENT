@@ -458,8 +458,10 @@ class ProposeMeasureApp:
         selected_file, ok = QInputDialog.getItem(window, "Open Attachment", "Select a file to open:", display_names, editable=False)
         if ok and selected_file:
             index = display_names.index(selected_file)
-            full_path = os.path.join(PROJECT_ROOT, rel_paths[index])
-
+            # full_path = os.path.join(PROJECT_ROOT, rel_paths[index])
+            filename = os.path.basename(rel_paths[index])  # Just the filename
+            full_path = os.path.join(self.UPLOADS_DIR, filename)  # Use UPLOADS_DIR instead of PROJECT_ROOT
+        
             if os.path.exists(full_path):
                 error = self.open_file(full_path)
                 if error:
