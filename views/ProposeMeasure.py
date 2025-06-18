@@ -436,7 +436,7 @@ class ProposeMeasureApp:
                     shutil.copy(file_path, dest_path)
                 new_files.append(filename)  # Only store filename, since we know the root is UPLOADS_DIR
             all_files = list(dict.fromkeys(current_files + new_files))  # Remove duplicates
-            inputField.setText("\n".join(os.path.basename(f) for f in all_files))
+            inputField.setText(", ".join(os.path.basename(f) for f in all_files))  # comma-separated
             inputField.setToolTip(";".join(all_files))
 
     def open_attachments(self, window, inputField):
@@ -449,14 +449,15 @@ class ProposeMeasureApp:
         selected_file, ok = QInputDialog.getItem(window, "Open Attachment", "Select a file to open:", display_names, editable=False)
         if ok and selected_file:
             index = display_names.index(selected_file)
-            full_path = os.path.join(self.UPLOADS_DIR, rel_paths[index])  # Correct full path
+            filename = rel_paths[index]  # This is now just the filename
+            full_path = os.path.join(self.UPLOADS_DIR, filename)
             if os.path.exists(full_path):
                 error = self.open_file(full_path)
                 if error:
                     QMessageBox.warning(window, "Error", f"Cannot open file:\n{error}")
             else:
                 QMessageBox.warning(window, "Not Found", f"File not found:\n{full_path}")
-
+    
     def remove_attachment(self, window, inputField):
         paths = inputField.toolTip().strip()
         if not paths:
