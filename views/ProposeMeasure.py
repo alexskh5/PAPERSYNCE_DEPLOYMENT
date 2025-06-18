@@ -472,7 +472,7 @@ class ProposeMeasureApp:
             index = display_names.index(selected_file)
             rel_paths.pop(index)
 
-            inputField.setText("\n".join(os.path.basename(p) for p in rel_paths))
+            inputField.setText(", ".join(os.path.basename(f) for f in all_files))
             inputField.setToolTip(";".join(rel_paths))
 
     def setup_attachments(self):
