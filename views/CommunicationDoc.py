@@ -38,7 +38,7 @@ class CommunicationDocApp:
         # Local development path (default)
         # self.UPLOADS_DIR = os.path.join(PROJECT_ROOT, "uploads")
         # self.UPLOADS_DIR = r"C:\paperSync\uploads"
-        self.UPLOADS_DIR = r"\\192.168.1.12\uploads2"
+        self.UPLOADS_DIR = r"\\192.168.1.100\uploads2"
         # Uncomment this when deploying to client and NAS is mounted
         # self.UPLOADS_DIR = "/mnt/nas/uploads"  # For Linux
         # self.UPLOADS_DIR = "/Volumes/NASShare/uploads"  # For macOS
