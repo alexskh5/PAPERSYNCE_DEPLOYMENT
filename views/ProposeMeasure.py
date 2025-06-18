@@ -1,3 +1,4 @@
+
 #views/pm4.py
 
 from PyQt6 import uic
@@ -429,35 +430,50 @@ class ProposeMeasureApp:
             os.makedirs(self.UPLOADS_DIR, exist_ok=True)
             current_files = inputField.toolTip().strip().split(";") if inputField.toolTip() else []
             new_files = []
+
             for file_path in files:
                 filename = os.path.basename(file_path)
                 dest_path = os.path.join(self.UPLOADS_DIR, filename)
+
                 if not os.path.exists(dest_path):
                     shutil.copy(file_path, dest_path)
-                new_files.append(filename)  # Only store filename, since we know the root is UPLOADS_DIR
-            all_files = list(dict.fromkeys(current_files + new_files))  # Remove duplicates
-            inputField.setText(", ".join(os.path.basename(f) for f in all_files))  # comma-separated
-            inputField.setToolTip(";".join(all_files))
 
+                # Store only the filename — we know where the root is
+                new_files.append(filename)
+
+            all_files = list(dict.fromkeys(current_files + new_files))  # Remove duplicates
+            inputField.setText(", ".join(os.path.basename(f) for f in all_files))  # Display as comma-separated
+            inputField.setToolTip(";".join(all_files))  # Store filenames only
+            
     def open_attachments(self, window, inputField):
         paths = inputField.toolTip().strip()
         if not paths:
             QMessageBox.information(window, "No Attachments", "No files to open.")
             return
+
         rel_paths = paths.split(";")
         display_names = [os.path.basename(p) for p in rel_paths]
-        selected_file, ok = QInputDialog.getItem(window, "Open Attachment", "Select a file to open:", display_names, editable=False)
+
+        selected_file, ok = QInputDialog.getItem(
+            window,
+            "Open Attachment",
+            "Select a file to open:",
+            display_names,
+            editable=False
+        )
+
         if ok and selected_file:
             index = display_names.index(selected_file)
-            filename = rel_paths[index]  # This is now just the filename
+            filename = rel_paths[index]  # Just the filename
             full_path = os.path.join(self.UPLOADS_DIR, filename)
+
             if os.path.exists(full_path):
                 error = self.open_file(full_path)
                 if error:
                     QMessageBox.warning(window, "Error", f"Cannot open file:\n{error}")
             else:
                 QMessageBox.warning(window, "Not Found", f"File not found:\n{full_path}")
-    
+                
     def remove_attachment(self, window, inputField):
         paths = inputField.toolTip().strip()
         if not paths:
@@ -467,12 +483,19 @@ class ProposeMeasureApp:
         rel_paths = paths.split(";")
         display_names = [os.path.basename(p) for p in rel_paths]
 
-        selected_file, ok = QInputDialog.getItem(window, "Remove Attachment", "Select a file to remove:", display_names, editable=False)
+        selected_file, ok = QInputDialog.getItem(
+            window,
+            "Remove Attachment",
+            "Select a file to remove:",
+            display_names,
+            editable=False
+        )
+
         if ok and selected_file:
             index = display_names.index(selected_file)
             rel_paths.pop(index)
 
-            inputField.setText(", ".join(os.path.basename(f) for f in all_files))
+            inputField.setText(", ".join(os.path.basename(f) for f in rel_paths))
             inputField.setToolTip(";".join(rel_paths))
 
     def setup_attachments(self):
