@@ -427,22 +427,15 @@ class ProposeMeasureApp:
         files, _ = QFileDialog.getOpenFileNames(window, "Select Files", "", "All Files (*)")
         if files:
             os.makedirs(self.UPLOADS_DIR, exist_ok=True)
-
             current_files = inputField.toolTip().strip().split(";") if inputField.toolTip() else []
             new_files = []
-
             for file_path in files:
                 filename = os.path.basename(file_path)
                 dest_path = os.path.join(self.UPLOADS_DIR, filename)
-
                 if not os.path.exists(dest_path):
                     shutil.copy(file_path, dest_path)
-
-                rel_path = os.path.join("uploads", filename)
-                new_files.append(rel_path)
-
+                new_files.append(filename)  # Only store filename, since we know the root is UPLOADS_DIR
             all_files = list(dict.fromkeys(current_files + new_files))  # Remove duplicates
-
             inputField.setText("\n".join(os.path.basename(f) for f in all_files))
             inputField.setToolTip(";".join(all_files))
 
@@ -451,17 +444,12 @@ class ProposeMeasureApp:
         if not paths:
             QMessageBox.information(window, "No Attachments", "No files to open.")
             return
-
         rel_paths = paths.split(";")
         display_names = [os.path.basename(p) for p in rel_paths]
-
         selected_file, ok = QInputDialog.getItem(window, "Open Attachment", "Select a file to open:", display_names, editable=False)
         if ok and selected_file:
             index = display_names.index(selected_file)
-            # full_path = os.path.join(PROJECT_ROOT, rel_paths[index])
-            filename = os.path.basename(rel_paths[index])  # Just the filename
-            full_path = os.path.join(self.UPLOADS_DIR, filename)  # Use UPLOADS_DIR instead of PROJECT_ROOT
-        
+            full_path = os.path.join(self.UPLOADS_DIR, rel_paths[index])  # Correct full path
             if os.path.exists(full_path):
                 error = self.open_file(full_path)
                 if error:
