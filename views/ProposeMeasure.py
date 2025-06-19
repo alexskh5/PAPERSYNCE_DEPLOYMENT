@@ -43,6 +43,9 @@ class ProposeMeasureApp:
         #self.UPLOADS_DIR = os.path.join(PROJECT_ROOT, "uploads")
         # self.UPLOADS_DIR = r"C:\paperSync\uploads"
         self.UPLOADS_DIR = r"\\192.168.1.100\uploads2"
+        print(f"[DEBUG] UPLOADS_DIR: {self.UPLOADS_DIR}")
+        if not os.path.exists(self.UPLOADS_DIR):
+            print("[ERROR] Uploads folder does not exist!")
         if not self.check_uploads_dir():
             local_uploads = os.path.join(PROJECT_ROOT, "uploads")
             QMessageBox.warning(None, "Network Storage Unavailable",
