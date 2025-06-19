@@ -475,7 +475,6 @@ class ProposeMeasureApp:
                 print(f"[DEBUG] Copying {file_path} to {dest_path}")
                 shutil.copy2(file_path, dest_path)
     
-                # Verify copy
                 if os.path.exists(dest_path):
                     new_files.append(filename)
                     print(f"[DEBUG] Successfully copied {filename}")
@@ -510,7 +509,6 @@ class ProposeMeasureApp:
         else:
             inputField.setText("")
             inputField.setToolTip("")
-
     
     def open_attachments(self, window, inputField):
         filenames_str = inputField.toolTip().strip()
@@ -537,6 +535,12 @@ class ProposeMeasureApp:
         existing_files = []
         missing_files = []
     
+        # Force refresh directory listing to avoid stale data
+        try:
+            os.listdir(self.UPLOADS_DIR)
+        except Exception as e:
+            print(f"[ERROR] Could not refresh directory: {str(e)}")
+    
         for filename in filenames_str.split(";"):
             filename = filename.strip()
             if not filename:
@@ -550,7 +554,7 @@ class ProposeMeasureApp:
                 if os.path.exists(full_path):
                     found = True
                     break
-                time.sleep(1)
+                time.sleep(1)  # Wait before retrying
     
             if found:
                 existing_files.append(filename)
@@ -559,6 +563,17 @@ class ProposeMeasureApp:
     
         if missing_files:
             print(f"[Warning] Missing attachment file(s): {missing_files}")
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Icon.Warning)
+            msg.setText("Missing Files")
+            msg.setInformativeText(
+                f"The following files could not be found:\n"
+                f"{', '.join(missing_files)}\n\n"
+                f"Current storage location:\n{self.UPLOADS_DIR}\n\n"
+                f"Please reattach them or check the storage location."
+            )
+            msg.setWindowTitle("Missing Files")
+            msg.exec()
     
         return existing_files
     
