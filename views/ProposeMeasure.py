@@ -11,7 +11,7 @@ from PyQt6.QtWidgets import (
 
 from PyQt6.QtCore import Qt, QSize, QDate
 from PyQt6.QtGui import QIcon, QAction, QFont
-import sys, os, shutil, subprocess, platform, re
+import sys, os, shutil, subprocess, platform, re, time
 
 
 
@@ -460,165 +460,108 @@ class ProposeMeasureApp:
         return None
 
     def handle_attach_file(self, window, inputField):
-        try:
-            files, _ = QFileDialog.getOpenFileNames(window, "Select Files", "", "All Files (*)")
-            if not files:
-                return
+        files, _ = QFileDialog.getOpenFileNames(window, "Select Files")
+        if not files:
+            return
     
-            print(f"[DEBUG] Selected files: {files}")
-            print(f"[DEBUG] Uploading to: {self.UPLOADS_DIR}")
+        current_files = inputField.toolTip().strip().split(";") if inputField.toolTip() else []
+        new_files = []
     
-            # Ensure uploads directory exists
+        for file_path in files:
             try:
-                os.makedirs(self.UPLOADS_DIR, exist_ok=True)
-                print(f"[DEBUG] Created directory if needed: {self.UPLOADS_DIR}")
-            except Exception as e:
-                QMessageBox.critical(window, "Error", 
-                    f"Cannot create uploads directory:\n{str(e)}\n"
-                    f"Path: {self.UPLOADS_DIR}")
-                return
+                filename = os.path.basename(file_path)
+                dest_path = os.path.join(self.UPLOADS_DIR, filename)
     
-            current_files = inputField.toolTip().strip().split(";") if inputField.toolTip() else []
-            new_files = []
+                print(f"[DEBUG] Copying {file_path} to {dest_path}")
+                shutil.copy2(file_path, dest_path)
     
-            for file_path in files:
-                try:
-                    filename = os.path.basename(file_path)
-                    dest_path = os.path.join(self.UPLOADS_DIR, filename)
-    
-                    print(f"[DEBUG] Copying {file_path} to {dest_path}")
-    
-                    # Copy file (overwrite if exists)
-                    shutil.copy2(file_path, dest_path)
-                    
-                    # Verify copy
-                    if os.path.exists(dest_path):
-                        new_files.append(filename)
-                        print(f"[DEBUG] Successfully copied {filename}")
-                    else:
-                        error_msg = f"Failed to copy file: {filename}"
-                        print(f"[ERROR] {error_msg}")
-                        QMessageBox.warning(window, "Error", error_msg)
-                except Exception as e:
-                    error_msg = f"Error copying {filename}:\n{str(e)}"
+                # Verify copy
+                if os.path.exists(dest_path):
+                    new_files.append(filename)
+                    print(f"[DEBUG] Successfully copied {filename}")
+                else:
+                    error_msg = f"Failed to copy file: {filename}"
                     print(f"[ERROR] {error_msg}")
                     QMessageBox.warning(window, "Error", error_msg)
-                    
-            # Force refresh the directory cache
-            try:
-                os.listdir(self.UPLOADS_DIR)
-            except:
-                pass
-                
-            if new_files:
-                all_files = list(dict.fromkeys(current_files + new_files))
-                inputField.setText(", ".join(os.path.basename(f) for f in all_files))
-                inputField.setToolTip(";".join(all_files))
-                print(f"[DEBUG] Updated attachment list: {all_files}")
-        except Exception as e:
-            error_msg = f"Unexpected error:\n{str(e)}"
-            print(f"[ERROR] {error_msg}")
-            QMessageBox.critical(window, "Error", error_msg)
-            
+    
+            except Exception as e:
+                error_msg = f"Error copying {filename}: {str(e)}"
+                print(f"[ERROR] {error_msg}")
+                QMessageBox.warning(window, "Error", error_msg)
+    
+        # Force refresh directory cache
+        try:
+            os.listdir(self.UPLOADS_DIR)
+        except:
+            pass
+    
+        if new_files:
+            all_files = list(dict.fromkeys(current_files + new_files))
+            verified_files = self.verify_attachments(";".join(all_files))
+    
+            display_text = ", ".join(os.path.basename(f) for f in verified_files)
+            if len(verified_files) < len(all_files):
+                missing = set(all_files) - set(verified_files)
+                display_text += f" (Missing: {', '.join(missing)})"
+    
+            inputField.setText(display_text)
+            inputField.setToolTip(";".join(verified_files))  # Only real files stored
+            print(f"[DEBUG] Updated attachment list: {verified_files}")
+        else:
+            inputField.setText("")
+            inputField.setToolTip("")
+
+    
     def open_attachments(self, window, inputField):
-        filenames = inputField.toolTip().strip()
-        if not filenames:
+        filenames_str = inputField.toolTip().strip()
+        if not filenames_str:
             QMessageBox.information(window, "No Attachments", "No files to open.")
             return
     
-        print(f"[DEBUG] Current UPLOADS_DIR: {self.UPLOADS_DIR}")
-        print(f"[DEBUG] Directory exists: {os.path.exists(self.UPLOADS_DIR)}")
-        if os.path.exists(self.UPLOADS_DIR):
-            print(f"[DEBUG] Directory contents: {os.listdir(self.UPLOADS_DIR)}")
-    
-        file_list = filenames.split(";")
-        display_names = [os.path.basename(p) for p in file_list]
-    
-        selected_file, ok = QInputDialog.getItem(
-            window,
-            "Open Attachment",
-            "Select a file to open:",
-            display_names,
-            editable=False
-        )
-    
-        if ok and selected_file:
-            index = display_names.index(selected_file)
-            filename = file_list[index]
+        for filename in filenames_str.split(";"):
+            filename = filename.strip()
+            if not filename:
+                continue
             full_path = os.path.join(self.UPLOADS_DIR, filename)
-    
-            print(f"[DEBUG] Trying to open file at: {full_path}")
-            print(f"[DEBUG] File exists: {os.path.exists(full_path)}")
-            
             if os.path.exists(full_path):
-                try:
-                    error = self.open_file(full_path)
-                    if error:
-                        QMessageBox.warning(window, "Error", 
-                            f"Cannot open file:\n{error}\n"
-                            f"Path: {full_path}")
-                except Exception as e:
-                    QMessageBox.warning(window, "Error", 
-                        f"Unexpected error opening file:\n{str(e)}\n"
-                        f"Path: {full_path}")
+                os.startfile(full_path)
             else:
-                QMessageBox.warning(window, "Not Found", 
-                    f"File not found at:\n{full_path}\n"
-                    f"Please verify the file exists in:\n{self.UPLOADS_DIR}")
-                
+                print(f"[Warning] Cannot open missing file: {filename}")
+                QMessageBox.warning(window, "File Not Found", f"The file '{filename}' could not be found.")
+
     def verify_attachments(self, filenames_str):
         if not filenames_str or not filenames_str.strip():
-            return True
+            return []
     
         print(f"[DEBUG] Verifying attachments in: {self.UPLOADS_DIR}")
-        try:
-            missing_files = []
-            existing_files = []
+        existing_files = []
+        missing_files = []
     
-            for filename in filenames_str.split(";"):
-                filename = filename.strip()
-                if not filename:
-                    continue
+        for filename in filenames_str.split(";"):
+            filename = filename.strip()
+            if not filename:
+                continue
     
-                full_path = os.path.join(self.UPLOADS_DIR, filename)
-                found = False
+            full_path = os.path.join(self.UPLOADS_DIR, filename)
+            found = False
     
-                # Try up to 3 times with small delay
-                for attempt in range(3):
-                    if os.path.exists(full_path):
-                        found = True
-                        break
-                    time.sleep(1)  # Wait before retrying
+            # Try up to 3 times with small delay
+            for attempt in range(3):
+                if os.path.exists(full_path):
+                    found = True
+                    break
+                time.sleep(1)
     
-                if found:
-                    existing_files.append(filename)
-                else:
-                    missing_files.append(filename)
+            if found:
+                existing_files.append(filename)
+            else:
+                missing_files.append(filename)
     
-            print(f"[DEBUG] Missing files: {missing_files}")
-            print(f"[DEBUG] Existing files: {existing_files}")
+        if missing_files:
+            print(f"[Warning] Missing attachment file(s): {missing_files}")
     
-            if missing_files:
-                msg = QMessageBox()
-                msg.setIcon(QMessageBox.Icon.Warning)
-                msg.setText("Missing Files")
-                msg.setInformativeText(
-                    f"The following files could not be found:\n"
-                    f"{', '.join(missing_files)}\n\n"
-                    f"Current storage location:\n{self.UPLOADS_DIR}\n\n"
-                    f"Please reattach them or check the storage location."
-                )
-                msg.setWindowTitle("Missing Files")
-                msg.exec()
-                return False
+        return existing_files
     
-            return True
-    
-        except Exception as e:
-            print(f"[ERROR] verify_attachments failed: {str(e)}")
-            QMessageBox.warning(self.window, "Error", f"Could not verify attachments:\n{str(e)}")
-            return False
-
     def check_uploads_dir(self):
         """Verify the uploads directory is accessible"""
         try:
