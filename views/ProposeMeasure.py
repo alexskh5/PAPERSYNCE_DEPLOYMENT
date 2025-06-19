@@ -38,20 +38,29 @@ class ProposeMeasureApp:
         self.db = Database()
         self.db.connect()
         self.staff_id = self.db.get_staff_id(username)
+
+
+
+        self.window = uic.loadUi(resource_path("ui/ProposeMeasure.ui"), QMainWindow())
+        self.window.setWindowIcon(QIcon(resource_path("asset/icons/app_logo.svg")))
+    
+        # Then setup uploads directory
+        self.UPLOADS_DIR = r"\\192.168.1.100\uploads2"
+        print(f"[DEBUG] UPLOADS_DIR: {self.UPLOADS_DIR}")
         
+        # Check network share with retries
+        if not self.check_uploads_dir_with_retry():
+            local_uploads = os.path.join(PROJECT_ROOT, "uploads")
+            print(f"Falling back to local storage at: {local_uploads}")
+            self.UPLOADS_DIR = local_uploads
+            os.makedirs(self.UPLOADS_DIR, exist_ok=True)
+            QMessageBox.warning(self.window, "Network Storage Unavailable",
+                f"Falling back to local storage at:\n{local_uploads}")
+            
         # Local development path (default)
         #self.UPLOADS_DIR = os.path.join(PROJECT_ROOT, "uploads")
         # self.UPLOADS_DIR = r"C:\paperSync\uploads"
-        self.UPLOADS_DIR = r"\\192.168.1.100\uploads2"
-        print(f"[DEBUG] UPLOADS_DIR: {self.UPLOADS_DIR}")
-        if not os.path.exists(self.UPLOADS_DIR):
-            print("[ERROR] Uploads folder does not exist!")
-        if not self.check_uploads_dir():
-            local_uploads = os.path.join(PROJECT_ROOT, "uploads")
-            QMessageBox.warning(None, "Network Storage Unavailable",
-                f"Falling back to local storage at:\n{local_uploads}")
-            self.UPLOADS_DIR = local_uploads
-            os.makedirs(self.UPLOADS_DIR, exist_ok=True)
+        
         # Uncomment this when deploying to client and NAS is mounted
         # self.UPLOADS_DIR = "/mnt/nas/uploads"  # For Linux
         # self.UPLOADS_DIR = "/Volumes/NASShare/uploads"  # For macOS
@@ -71,14 +80,14 @@ class ProposeMeasureApp:
 
         # self.app = QApplication(sys.argv)
         # self.window = uic.loadUi(os.path.join(BASE_DIR, "..", "ui", "proposeMeasuredups.ui"))
-        self.window = uic.loadUi(resource_path("ui/ProposeMeasure.ui"), QMainWindow())
+        # self.window = uic.loadUi(resource_path("ui/ProposeMeasure.ui"), QMainWindow())
         
         # self.window.setWindowFlags(Qt.WindowType.Window)  # enable minimize/maximize/close
         # self.window.resize(1200, 800)  # initial window size
         # self.window.setMinimumSize(800, 600)  # optional limit
         # self.window.show() 
         
-        self.window.setWindowIcon(QIcon(resource_path("asset/icons/app_logo.svg")))
+        # self.window.setWindowIcon(QIcon(resource_path("asset/icons/app_logo.svg")))
         # self.window.showFullScreen() 
         # if parent_geometry:
         #     self.window.setGeometry(parent_geometry)
@@ -437,33 +446,43 @@ class ProposeMeasureApp:
         return None
 
     def handle_attach_file(self, window, inputField):
-        files, _ = QFileDialog.getOpenFileNames(window, "Select Files", "", "All Files (*)")
-        if files:
-            os.makedirs(self.UPLOADS_DIR, exist_ok=True)
+        try:
+            files, _ = QFileDialog.getOpenFileNames(window, "Select Files", "", "All Files (*)")
+            if not files:
+                return
+    
+            # Ensure uploads directory exists
+            try:
+                os.makedirs(self.UPLOADS_DIR, exist_ok=True)
+            except Exception as e:
+                QMessageBox.critical(window, "Error", f"Cannot create uploads directory:\n{str(e)}")
+                return
+    
             current_files = inputField.toolTip().strip().split(";") if inputField.toolTip() else []
             new_files = []
     
             for file_path in files:
-                filename = os.path.basename(file_path)
-                dest_path = os.path.join(self.UPLOADS_DIR, filename)
-    
                 try:
-                    if not os.path.exists(dest_path):
-                        shutil.copy(file_path, dest_path)
-                    # Verify the file was copied successfully
+                    filename = os.path.basename(file_path)
+                    dest_path = os.path.join(self.UPLOADS_DIR, filename)
+    
+                    # Copy file
+                    shutil.copy2(file_path, dest_path)
+                    
+                    # Verify copy
                     if os.path.exists(dest_path):
                         new_files.append(filename)
                     else:
                         QMessageBox.warning(window, "Error", f"Failed to copy file: {filename}")
-                        continue
                 except Exception as e:
-                    QMessageBox.warning(window, "Error", f"Error copying file {filename}: {str(e)}")
-                    continue
+                    QMessageBox.warning(window, "Error", f"Error copying {filename}:\n{str(e)}")
     
-            all_files = list(dict.fromkeys(current_files + new_files))  # Remove duplicates
-            inputField.setText(", ".join(os.path.basename(f) for f in all_files))  # Display as comma-separated
-            inputField.setToolTip(";".join(all_files))  # Store filenames only
-            
+            if new_files:
+                all_files = list(dict.fromkeys(current_files + new_files))
+                inputField.setText(", ".join(os.path.basename(f) for f in all_files))
+                inputField.setToolTip(";".join(all_files))
+        except Exception as e:
+            QMessageBox.critical(window, "Error", f"Unexpected error:\n{str(e)}")
     def open_attachments(self, window, inputField):
         filenames = inputField.toolTip().strip()
         if not filenames:
@@ -501,22 +520,63 @@ class ProposeMeasureApp:
 
     def verify_attachments(self, filenames_str):
         """Verify that all attachments in the string exist on disk"""
-        if not filenames_str:
+        if not filenames_str or not filenames_str.strip():
             return True
             
-        missing_files = []
-        for filename in filenames_str.split(";"):
-            full_path = os.path.join(self.UPLOADS_DIR, filename)
-            if not os.path.exists(full_path):
-                missing_files.append(filename)
-        
-        if missing_files:
-            QMessageBox.warning(self.window, "Missing Files", 
-                f"The following files could not be found:\n"
-                f"{', '.join(missing_files)}\n"
-                f"Please reattach them or check the uploads directory.")
+        try:
+            missing_files = []
+            for filename in filenames_str.split(";"):
+                filename = filename.strip()
+                if not filename:
+                    continue
+                    
+                full_path = os.path.join(self.UPLOADS_DIR, filename)
+                if not os.path.exists(full_path):
+                    missing_files.append(filename)
+            
+            if missing_files:
+                QMessageBox.warning(self.window, "Missing Files", 
+                    f"The following files could not be found:\n"
+                    f"{', '.join(missing_files)}\n"
+                    f"Please reattach them or check the uploads directory at:\n{self.UPLOADS_DIR}")
+                return False
+            return True
+        except Exception as e:
+            print(f"Error verifying attachments: {str(e)}")
+            QMessageBox.warning(self.window, "Error", 
+                f"Could not verify attachments:\n{str(e)}")
             return False
-        return True
+
+    def check_uploads_dir(self):
+        """Verify the uploads directory is accessible"""
+        try:
+            # First check if path exists
+            if not os.path.exists(self.UPLOADS_DIR):
+                return False
+                
+            # Try to create a test file
+            test_file = os.path.join(self.UPLOADS_DIR, "test.tmp")
+            try:
+                with open(test_file, 'w') as f:
+                    f.write("test")
+                os.remove(test_file)
+                return True
+            except Exception as e:
+                print(f"Error accessing uploads directory: {str(e)}")
+                return False
+        except Exception as e:
+            print(f"Error checking uploads directory: {str(e)}")
+            return False
+
+    def check_uploads_dir_with_retry(self, retries=3, delay=2):
+        """Check uploads directory with retries"""
+        import time
+        for attempt in range(retries):
+            if self.check_uploads_dir():
+                return True
+            if attempt < retries - 1:
+                time.sleep(delay)
+        return False
     
     def remove_attachment(self, window, inputField):
         paths = inputField.toolTip().strip()
