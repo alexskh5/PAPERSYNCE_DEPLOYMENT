@@ -503,7 +503,13 @@ class ProposeMeasureApp:
                     error_msg = f"Error copying {filename}:\n{str(e)}"
                     print(f"[ERROR] {error_msg}")
                     QMessageBox.warning(window, "Error", error_msg)
-    
+                    
+            # Force refresh the directory cache
+            try:
+                os.listdir(self.UPLOADS_DIR)
+            except:
+                pass
+                
             if new_files:
                 all_files = list(dict.fromkeys(current_files + new_files))
                 inputField.setText(", ".join(os.path.basename(f) for f in all_files))
@@ -561,31 +567,37 @@ class ProposeMeasureApp:
                     f"Please verify the file exists in:\n{self.UPLOADS_DIR}")
                 
     def verify_attachments(self, filenames_str):
-        """Verify that all attachments in the string exist on disk"""
         if not filenames_str or not filenames_str.strip():
             return True
-            
+    
         print(f"[DEBUG] Verifying attachments in: {self.UPLOADS_DIR}")
-        
         try:
             missing_files = []
             existing_files = []
-            
+    
             for filename in filenames_str.split(";"):
                 filename = filename.strip()
                 if not filename:
                     continue
-                    
+    
                 full_path = os.path.join(self.UPLOADS_DIR, filename)
-                
-                if os.path.exists(full_path):
+                found = False
+    
+                # Try up to 3 times with small delay
+                for attempt in range(3):
+                    if os.path.exists(full_path):
+                        found = True
+                        break
+                    time.sleep(1)  # Wait before retrying
+    
+                if found:
                     existing_files.append(filename)
                 else:
                     missing_files.append(filename)
-            
+    
             print(f"[DEBUG] Missing files: {missing_files}")
             print(f"[DEBUG] Existing files: {existing_files}")
-            
+    
             if missing_files:
                 msg = QMessageBox()
                 msg.setIcon(QMessageBox.Icon.Warning)
@@ -599,12 +611,12 @@ class ProposeMeasureApp:
                 msg.setWindowTitle("Missing Files")
                 msg.exec()
                 return False
-                
+    
             return True
+    
         except Exception as e:
             print(f"[ERROR] verify_attachments failed: {str(e)}")
-            QMessageBox.warning(self.window, "Error", 
-                f"Could not verify attachments:\n{str(e)}")
+            QMessageBox.warning(self.window, "Error", f"Could not verify attachments:\n{str(e)}")
             return False
 
     def check_uploads_dir(self):
