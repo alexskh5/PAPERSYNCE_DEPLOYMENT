@@ -46,17 +46,31 @@ class ProposeMeasureApp:
     
         # Then setup uploads directory
         self.UPLOADS_DIR = r"\\192.168.1.100\uploads2"
-        print(f"[DEBUG] UPLOADS_DIR: {self.UPLOADS_DIR}")
+        print(f"[INIT] Initial UPLOADS_DIR: {self.UPLOADS_DIR}")
         
-        # Check network share with retries
-        if not self.check_uploads_dir_with_retry():
+        # Verify network share or fall back to local
+        if not self.check_network_share():
             local_uploads = os.path.join(PROJECT_ROOT, "uploads")
-            print(f"Falling back to local storage at: {local_uploads}")
+            print(f"[INIT] Falling back to local storage: {local_uploads}")
             self.UPLOADS_DIR = local_uploads
             os.makedirs(self.UPLOADS_DIR, exist_ok=True)
-            QMessageBox.warning(self.window, "Network Storage Unavailable",
-                f"Falling back to local storage at:\n{local_uploads}")
             
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Icon.Warning)
+            msg.setText("Network Storage Unavailable")
+            msg.setInformativeText(
+                f"Could not access network storage at:\n{self.UPLOADS_DIR}\n\n"
+                f"Falling back to local storage at:\n{local_uploads}"
+            )
+            msg.setWindowTitle("Storage Warning")
+            msg.exec()
+        
+        print(f"[INIT] Final UPLOADS_DIR: {self.UPLOADS_DIR}")
+        print(f"[INIT] Directory exists: {os.path.exists(self.UPLOADS_DIR)}")
+        if os.path.exists(self.UPLOADS_DIR):
+            print(f"[INIT] Initial contents: {os.listdir(self.UPLOADS_DIR)}")
+        
+                
         # Local development path (default)
         #self.UPLOADS_DIR = os.path.join(PROJECT_ROOT, "uploads")
         # self.UPLOADS_DIR = r"C:\paperSync\uploads"
@@ -451,11 +465,17 @@ class ProposeMeasureApp:
             if not files:
                 return
     
+            print(f"[DEBUG] Selected files: {files}")
+            print(f"[DEBUG] Uploading to: {self.UPLOADS_DIR}")
+    
             # Ensure uploads directory exists
             try:
                 os.makedirs(self.UPLOADS_DIR, exist_ok=True)
+                print(f"[DEBUG] Created directory if needed: {self.UPLOADS_DIR}")
             except Exception as e:
-                QMessageBox.critical(window, "Error", f"Cannot create uploads directory:\n{str(e)}")
+                QMessageBox.critical(window, "Error", 
+                    f"Cannot create uploads directory:\n{str(e)}\n"
+                    f"Path: {self.UPLOADS_DIR}")
                 return
     
             current_files = inputField.toolTip().strip().split(";") if inputField.toolTip() else []
@@ -466,28 +486,44 @@ class ProposeMeasureApp:
                     filename = os.path.basename(file_path)
                     dest_path = os.path.join(self.UPLOADS_DIR, filename)
     
-                    # Copy file
+                    print(f"[DEBUG] Copying {file_path} to {dest_path}")
+    
+                    # Copy file (overwrite if exists)
                     shutil.copy2(file_path, dest_path)
                     
                     # Verify copy
                     if os.path.exists(dest_path):
                         new_files.append(filename)
+                        print(f"[DEBUG] Successfully copied {filename}")
                     else:
-                        QMessageBox.warning(window, "Error", f"Failed to copy file: {filename}")
+                        error_msg = f"Failed to copy file: {filename}"
+                        print(f"[ERROR] {error_msg}")
+                        QMessageBox.warning(window, "Error", error_msg)
                 except Exception as e:
-                    QMessageBox.warning(window, "Error", f"Error copying {filename}:\n{str(e)}")
+                    error_msg = f"Error copying {filename}:\n{str(e)}"
+                    print(f"[ERROR] {error_msg}")
+                    QMessageBox.warning(window, "Error", error_msg)
     
             if new_files:
                 all_files = list(dict.fromkeys(current_files + new_files))
                 inputField.setText(", ".join(os.path.basename(f) for f in all_files))
                 inputField.setToolTip(";".join(all_files))
+                print(f"[DEBUG] Updated attachment list: {all_files}")
         except Exception as e:
-            QMessageBox.critical(window, "Error", f"Unexpected error:\n{str(e)}")
+            error_msg = f"Unexpected error:\n{str(e)}"
+            print(f"[ERROR] {error_msg}")
+            QMessageBox.critical(window, "Error", error_msg)
+            
     def open_attachments(self, window, inputField):
         filenames = inputField.toolTip().strip()
         if not filenames:
             QMessageBox.information(window, "No Attachments", "No files to open.")
             return
+    
+        print(f"[DEBUG] Current UPLOADS_DIR: {self.UPLOADS_DIR}")
+        print(f"[DEBUG] Directory exists: {os.path.exists(self.UPLOADS_DIR)}")
+        if os.path.exists(self.UPLOADS_DIR):
+            print(f"[DEBUG] Directory contents: {os.listdir(self.UPLOADS_DIR)}")
     
         file_list = filenames.split(";")
         display_names = [os.path.basename(p) for p in file_list]
@@ -505,44 +541,68 @@ class ProposeMeasureApp:
             filename = file_list[index]
             full_path = os.path.join(self.UPLOADS_DIR, filename)
     
-            # Debug output
-            print(f"Looking for file at: {full_path}")
-            print(f"Directory contents: {os.listdir(self.UPLOADS_DIR)}")
-    
+            print(f"[DEBUG] Trying to open file at: {full_path}")
+            print(f"[DEBUG] File exists: {os.path.exists(full_path)}")
+            
             if os.path.exists(full_path):
-                error = self.open_file(full_path)
-                if error:
-                    QMessageBox.warning(window, "Error", f"Cannot open file:\n{error}")
+                try:
+                    error = self.open_file(full_path)
+                    if error:
+                        QMessageBox.warning(window, "Error", 
+                            f"Cannot open file:\n{error}\n"
+                            f"Path: {full_path}")
+                except Exception as e:
+                    QMessageBox.warning(window, "Error", 
+                        f"Unexpected error opening file:\n{str(e)}\n"
+                        f"Path: {full_path}")
             else:
                 QMessageBox.warning(window, "Not Found", 
                     f"File not found at:\n{full_path}\n"
-                    f"Please check if the file exists in the uploads directory.")
-
+                    f"Please verify the file exists in:\n{self.UPLOADS_DIR}")
+                
     def verify_attachments(self, filenames_str):
         """Verify that all attachments in the string exist on disk"""
         if not filenames_str or not filenames_str.strip():
             return True
             
+        print(f"[DEBUG] Verifying attachments in: {self.UPLOADS_DIR}")
+        
         try:
             missing_files = []
+            existing_files = []
+            
             for filename in filenames_str.split(";"):
                 filename = filename.strip()
                 if not filename:
                     continue
                     
                 full_path = os.path.join(self.UPLOADS_DIR, filename)
-                if not os.path.exists(full_path):
+                
+                if os.path.exists(full_path):
+                    existing_files.append(filename)
+                else:
                     missing_files.append(filename)
             
+            print(f"[DEBUG] Missing files: {missing_files}")
+            print(f"[DEBUG] Existing files: {existing_files}")
+            
             if missing_files:
-                QMessageBox.warning(self.window, "Missing Files", 
+                msg = QMessageBox()
+                msg.setIcon(QMessageBox.Icon.Warning)
+                msg.setText("Missing Files")
+                msg.setInformativeText(
                     f"The following files could not be found:\n"
-                    f"{', '.join(missing_files)}\n"
-                    f"Please reattach them or check the uploads directory at:\n{self.UPLOADS_DIR}")
+                    f"{', '.join(missing_files)}\n\n"
+                    f"Current storage location:\n{self.UPLOADS_DIR}\n\n"
+                    f"Please reattach them or check the storage location."
+                )
+                msg.setWindowTitle("Missing Files")
+                msg.exec()
                 return False
+                
             return True
         except Exception as e:
-            print(f"Error verifying attachments: {str(e)}")
+            print(f"[ERROR] verify_attachments failed: {str(e)}")
             QMessageBox.warning(self.window, "Error", 
                 f"Could not verify attachments:\n{str(e)}")
             return False
@@ -577,6 +637,32 @@ class ProposeMeasureApp:
             if attempt < retries - 1:
                 time.sleep(delay)
         return False
+
+    def check_network_share(self):
+        """Check if network share is available and accessible"""
+        if not self.UPLOADS_DIR.startswith(r"\\"):
+            return True  # Not a network path
+            
+        print(f"[DEBUG] Checking network share: {self.UPLOADS_DIR}")
+        
+        try:
+            # First check if path exists
+            if not os.path.exists(self.UPLOADS_DIR):
+                print(f"[DEBUG] Network path does not exist")
+                return False
+                
+            # Try to list contents
+            try:
+                files = os.listdir(self.UPLOADS_DIR)
+                print(f"[DEBUG] Network share accessible. Contains {len(files)} items")
+                return True
+            except Exception as e:
+                print(f"[ERROR] Could not access network share: {str(e)}")
+                return False
+                
+        except Exception as e:
+            print(f"[ERROR] Network share check failed: {str(e)}")
+            return False
     
     def remove_attachment(self, window, inputField):
         paths = inputField.toolTip().strip()
