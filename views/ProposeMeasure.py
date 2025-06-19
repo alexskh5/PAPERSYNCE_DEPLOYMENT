@@ -350,23 +350,17 @@ class ProposeMeasureApp:
             try:
                 filename = os.path.basename(file_path)
                 dest_path = os.path.join(self.UPLOADS_DIR, filename)
-                print(f"[DEBUG] Copying {file_path} to {dest_path}")
+                print(f"[DEBUG] Copying {file_path} -> {dest_path}")
                 shutil.copy2(file_path, dest_path)
+                print(f"[DEBUG] File exists after copy: {os.path.exists(dest_path)}")
                 if os.path.exists(dest_path):
-                    # Store full relative path (e.g., "uploads/filename.pdf")
-                    rel_path = os.path.relpath(dest_path, start=PROJECT_ROOT)
-                    new_files.append(rel_path)
-                    print(f"[DEBUG] Successfully copied {filename}")
+                    new_files.append(filename)
                 else:
-                    error_msg = f"Failed to copy file: {filename}"
-                    print(f"[ERROR] {error_msg}")
-                    QMessageBox.warning(window, "Error", error_msg)
+                    QMessageBox.warning(window, "Error", f"Failed to copy {filename}")
             except Exception as e:
-                error_msg = f"Error copying {filename}: {str(e)}"
-                print(f"[ERROR] {error_msg}")
-                QMessageBox.warning(window, "Error", error_msg)
-        try:
-            os.listdir(self.UPLOADS_DIR)
+                print(f"[ERROR] {e}")
+                try:
+                    os.listdir(self.UPLOADS_DIR)
         except:
             pass
         if new_files:
@@ -412,14 +406,9 @@ class ProposeMeasureApp:
             filename = filename.strip()
             if not filename:
                 continue
-            full_path = os.path.join(PROJECT_ROOT, filename)
-            found = False
-            for attempt in range(3):
-                if os.path.exists(full_path):
-                    found = True
-                    break
-                time.sleep(1)
-            if found:
+            full_path = os.path.join(self.UPLOADS_DIR, filename)
+            print(f"[VERIFY] Checking: {full_path}, Exists: {os.path.exists(full_path)}")
+            if os.path.exists(full_path):
                 existing_files.append(filename)
             else:
                 missing_files.append(filename)
