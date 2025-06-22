@@ -200,9 +200,6 @@ class OtherDocumentApp:
         }
 
         title = form_data["title"]
-        
-        if not self.verify_attachments(form_data["attachfile"]):
-            return
             
         # Validate format first
         if not self.validate_input_numbers(title):
@@ -261,10 +258,6 @@ class OtherDocumentApp:
             }
         
         title = form_data["title"]
-
-        # Validate format first
-        if not self.validate_input_numbers(title):
-            return
 
         mapped_data = self.map_form_data_to_db_keys(form_data)
 
