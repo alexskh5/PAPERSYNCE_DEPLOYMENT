@@ -126,7 +126,7 @@ class CommunicationDocApp:
         self.setup_navigation()
         self.setup_search()
         self.window.setWindowTitle("Communication Document")
-        self.window.setGeometry(300, 200, 1000, 500)
+        # self.window.setGeometry(300, 200, 1000, 500)
 
 
     
