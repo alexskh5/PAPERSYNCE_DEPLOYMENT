@@ -37,12 +37,20 @@ class OtherDocumentApp:
         self.db = Database()
         self.db.connect()
         self.staff_id = self.db.get_staff_id(username)
+
+        print(f"[DEBUG] Staff ID for {username}: {self.staff_id}")
+
+        self.window = uic.loadUi(resource_path("ui/otherDocu.ui"))
+        self.window.setWindowIcon(QIcon(resource_path("asset/icons/app_logo.svg")))
         
+        # WALA LANG NAKO GI REMOVE IMONG ORIG COMMENTS HEHEHEH 
         
         # Local development path (default)
         # self.UPLOADS_DIR = os.path.join(PROJECT_ROOT, "uploads")
         # self.UPLOADS_DIR = r"C:\paperSync\uploads"
+
         self.UPLOADS_DIR = r"\\192.168.1.100\uploads2"
+        
         # Uncomment this when deploying to client and NAS is mounted
         # self.UPLOADS_DIR = "/mnt/nas/uploads"  # For Linux
         # self.UPLOADS_DIR = "/Volumes/NASShare/uploads"  # For macOS
@@ -54,6 +62,28 @@ class OtherDocumentApp:
 
         # # Will use NAS path if UPLOADS_DIR env variable is set, else default to local
         # self.UPLOADS_DIR = os.getenv("UPLOADS_DIR", os.path.join(PROJECT_ROOT, "uploads"))
+
+        print(f"[INIT] Initial UPLOADS_DIR: {self.UPLOADS_DIR}")
+        
+        # Verify network share or fall back to local
+        if not self.check_network_share():
+            local_uploads = os.path.join(PROJECT_ROOT, "uploads")
+            print(f"[INIT] Falling back to local storage: {local_uploads}")
+            self.UPLOADS_DIR = local_uploads
+            os.makedirs(self.UPLOADS_DIR, exist_ok=True)
+            
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Icon.Warning)
+            msg.setText("Network Storage Unavailable")
+            msg.setInformativeText(
+                f"Could not access network storage at:\n{self.UPLOADS_DIR}\n\n"
+                f"Falling back to local storage at:\n{local_uploads}"
+            )
+            msg.setWindowTitle("Storage Warning")
+            msg.exec()
+        
+        print(f"[INIT] Final UPLOADS_DIR: {self.UPLOADS_DIR}")
+        print(f"[INIT] Directory exists: {os.path.exists(self.UPLOADS_DIR)}")
 
         if not os.path.exists(self.UPLOADS_DIR):
             os.makedirs(self.UPLOADS_DIR)
