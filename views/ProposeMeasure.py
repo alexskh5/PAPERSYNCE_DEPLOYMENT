@@ -44,7 +44,8 @@ class ProposeMeasureApp:
         self.window.setWindowIcon(QIcon(resource_path("asset/icons/app_logo.svg")))
     
         # Then setup uploads directory
-        self.UPLOADS_DIR = r"\\192.168.1.100\uploads2"
+        self.UPLOADS_DIR = r"C:\paperSync\uploads"
+        #self.UPLOADS_DIR = r"\\192.168.1.100\uploads2"
         print(f"[INIT] Initial UPLOADS_DIR: {self.UPLOADS_DIR}")
         
         # Verify network share or fall back to local
