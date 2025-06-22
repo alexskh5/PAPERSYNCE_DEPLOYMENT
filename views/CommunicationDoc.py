@@ -205,8 +205,7 @@ class CommunicationDocApp:
             "updated_by": self.staff_id, 
         }
 
-        if not self.verify_attachments(form_data["attachfile"]):
-            return
+   
         
         mapped_data = self.map_form_data_to_db_keys(form_data)
         communication_id = getattr(self.controller,'editing_communication_id', None)
@@ -256,9 +255,7 @@ class CommunicationDocApp:
             "liquidate": self.window.editLiquidateInput.currentText().strip().lower() == "yes",        
             "updated_by": self.staff_id, 
         }
-        
-        if not self.verify_attachments(form_data["attachfile"]):
-            return
+
         
         mapped_data = self.map_form_data_to_db_keys(form_data)
 
