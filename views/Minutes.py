@@ -73,7 +73,7 @@ class MinutesApp:
         self.setup_navigation()
         self.setup_search()
         self.window.setWindowTitle("Minutes")
-        self.window.setGeometry(300, 200, 1000, 500)
+        # self.window.setGeometry(300, 200, 1000, 500)
     
     def load_minutes_types(self):
         cursor = self.db.get_cursor()
